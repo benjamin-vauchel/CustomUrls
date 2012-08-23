@@ -11,12 +11,12 @@ Usefull when you want to add id or published date to your URLs.
 
 Examples of URL patterns : 
 
-[[+alias]]
-some-text-before-[[+alias]]
-[[+id]]-[[+alias]]
-[[+publishedon:strtotime:date=`%Y-%m-%d`]]/[[+id]]-[[+alias]]
-[[+tv.mytv]]-[[+id]]
-[[MySnippet? &id=`[[+id]]`]]
+[[+alias]]  
+some-text-before-[[+alias]]  
+[[+id]]-[[+alias]]  
+[[+publishedon:strtotime:date=`%Y-%m-%d`]]/[[+id]]-[[+alias]]  
+[[+tv.mytv]]-[[+id]]  
+[[MySnippet? &id=`[[+id]]`]]  
 
-Documentation: http://rtfm.modx.com/display/ADDON/CustomUrls
-Bugs and Feature Requests: https://github.com/omycode/customurls
+Documentation: http://rtfm.modx.com/display/ADDON/CustomUrls  
+Bugs and Feature Requests: https://github.com/omycode/customurls  
