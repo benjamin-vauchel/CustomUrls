@@ -11,6 +11,8 @@ class CustomUrlCreateProcessor extends modObjectCreateProcessor {
         $this->setProperty('uri', ($this->getProperty('uri',false) == 'true' ? true : false));
         $this->setProperty('override', ($this->getProperty('override',false) == 'true' ? true : false));
         $this->setProperty('active', ($this->getProperty('active',false) == 'true' ? true : false));
+        
+        return parent::beforeSave();
     }
 }
 return 'CustomUrlCreateProcessor';
