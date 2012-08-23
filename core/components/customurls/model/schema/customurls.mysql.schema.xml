@@ -5,9 +5,9 @@
 		<field key="pattern" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
 		<field key="criteria_key" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
 		<field key="criteria_value" dbtype="varchar" precision="255" phptype="string" null="false" default="" />
-		<field key="usergroup" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="0" />
-		<field key="uri" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" />
-		<field key="override" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" />
+		<field key="usergroup" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="true" default="0" />
+		<field key="uri" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="0" />
+		<field key="override" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="0" />
 		<field key="active" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" />
 	</object>
 </model>

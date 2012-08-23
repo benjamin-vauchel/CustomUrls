@@ -56,7 +56,7 @@ $xpdo_meta_map['CustomUrl']= array (
       'precision' => '11',
       'attributes' => 'unsigned',
       'phptype' => 'integer',
-      'null' => false,
+      'null' => true,
       'default' => 0,
     ),
     'uri' => 
@@ -66,7 +66,7 @@ $xpdo_meta_map['CustomUrl']= array (
       'attributes' => 'unsigned',
       'phptype' => 'boolean',
       'null' => false,
-      'default' => 1,
+      'default' => 0,
     ),
     'override' => 
     array (
@@ -75,7 +75,7 @@ $xpdo_meta_map['CustomUrl']= array (
       'attributes' => 'unsigned',
       'phptype' => 'boolean',
       'null' => false,
-      'default' => 1,
+      'default' => 0,
     ),
     'active' => 
     array (
