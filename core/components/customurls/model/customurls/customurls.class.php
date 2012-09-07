@@ -66,8 +66,9 @@ class CustomUrls {
             'modUserGroupMember.member' => 1,
             )
         );
+        $c->sortby('criteria_key', 'desc');
         $c->limit(1);
-        $c->prepare();
+        //$c->prepare();
 
         //$this->modx->log(xPDO::LOG_LEVEL_ERROR, $c->toSQL());
 
@@ -76,8 +77,9 @@ class CustomUrls {
 
     function generateCustomUrl(&$resource, $customUrl)
     {
-
-        $resourceUpdated = false;
+        // Set current context and resource for snippets processing (UltimateParent, getResourceField, ...)
+        $this->modx->switchContext($resource->get('context_key'));
+        $this->modx->resource = $resource;
 
         // Create temporary chunk from custom url pattern
         $chunk = $this->modx->newObject('modChunk');
@@ -108,8 +110,7 @@ class CustomUrls {
         if(!$customUrl->get('uri'))
         {
             $oldAlias = isset($_REQUEST['alias']) ? $_REQUEST['alias'] : $resource->get('alias');
-            $newAlias = $chunk->process($resourceProperties); 
-            $newAlias = $resource->cleanAlias($newAlias);
+            $newAlias = $chunk->process($resourceProperties);
             
             //$this->modx->log(modX::LOG_LEVEL_ERROR, $oldAlias .' != '. $newAlias);
             
@@ -126,6 +127,7 @@ class CustomUrls {
                 $resource->set('uri', '');
                 $resource->set('uri_override', false);
                 $resource->save();
+                $this->modx->cacheManager->refresh(); // @TODO : use clearCache function instead
             }
         }
         // or generate URI
@@ -140,29 +142,37 @@ class CustomUrls {
                     'cu.parent_uri' => $parentUri,
                 );
             }
+            else
+            {
+                $cuProperties = array(
+                    'cu.parent_uri' => '',
+                );
+            }
+
+            //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Parent URI ('.$resource->get('id').') : '.$parentUri);
             
             $properties = array_merge($cuProperties, $resourceProperties);
 
             $oldUri = isset($_REQUEST['uri']) ? $_REQUEST['uri'] : $resource->get('uri');
-            $newUri = $chunk->process($properties); 
+            $newUri = ltrim($chunk->process($properties), '/'); 
             
+            // We add the extension or container suffix
             $isHtml = true;
             $extension = '';
             $workingContext = $this->modx->getContext($resource->get('context_key'));
             $containerSuffix = $workingContext->getOption('container_suffix', '');
             
-            /* @var modContentType $contentType process content type */
-            if (!empty($_REQUEST['content_type']) && $contentType = $this->modx->getObject('modContentType', $_REQUEST['content_type'])) {
+            if ($contentType = $this->modx->getObject('modContentType', $resource->get('content_type'))) {
                 $extension = $contentType->getExtension();
                 $isHtml = (strpos($contentType->get('mime_type'), 'html') !== false);
             }
-            /* set extension to container suffix if Resource is a folder, HTML content type, and the container suffix is set */
-            if (!empty($_REQUEST['is_folder']) && $isHtml && !empty ($containerSuffix)) {
+            if ($resource->get('is_folder') && $isHtml && !empty ($containerSuffix)) {
                 $extension = $containerSuffix;
             }
-            
+
             $newUri .= $extension;
-            $newUri = $resource->cleanAlias($newUri);
+            //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Extension ('.$resource->get('id').') : '.$extension);
+            
             
             if(empty($oldUri) || ($customUrl->get('override') && $oldUri != $newUri))
             {
@@ -176,6 +186,7 @@ class CustomUrls {
                 $resource->set('uri', $newUri);
                 $resource->set('uri_override', true);
                 $resource->save();
+                $this->modx->cacheManager->refresh(); // @TODO : use clearCache function instead
             }
         }
 
@@ -186,7 +197,7 @@ class CustomUrls {
     {
         
         // We specifie context to make relative links with makeUrl
-        $this->modx->switchContext('web');
+        $this->modx->switchContext($resource->get('context_key'));
         
         // We create the redirection for the resource ...
         $values = '("'.$this->modx->makeUrl($resource->get('id')).'","[[~'.$resource->get('id').']]", '.($resource->get('deleted') ? 0 : 1).')';
@@ -211,4 +222,22 @@ class CustomUrls {
             $this->modx->log(modX::LOG_LEVEL_DEBUG, '[CustomUrls] Redirects for resource '.$resource->get('id').' and childs havent been generated');
         }
     }
+
+    public function clearCache($resource) {
+        $syncSite = $this->getProperty('syncsite',false);
+        $clearCache = $this->getProperty('clearCache',false);
+        if (!empty($syncSite) || !empty($clearCache)) {
+            $contexts = array($this->object->get('context_key'));
+            if (!empty($this->oldContext)) {
+                $contexts[] = $this->oldContext->get('key');
+            }
+            $this->modx->cacheManager->refresh(array(
+                'db' => array(),
+                'auto_publish' => array('contexts' => $contexts),
+                'context_settings' => array('contexts' => $contexts),
+                'resource' => array('contexts' => $contexts),
+            ));
+        }
+    }
+
 }

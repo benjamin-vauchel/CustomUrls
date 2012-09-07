@@ -7,33 +7,24 @@ $corePath =  $modx->getOption('customurls.core_path',$scriptProperties,$modx->ge
 $customUrls = $modx->getService('customurls','CustomUrls',$corePath.'model/customurls/',$scriptProperties);
 if (!($customUrls instanceof CustomUrls)) return '';
 
-function array_keys_multi(array $array)
+$resourceIds = $modx->getChildIds(0,10,array('context' => 'web'));
+
+foreach($resourceIds as $resourceId)
 {
-    $keys = array();
- 
-    foreach ($array as $key => $value) {
-        $keys[] = $key;
- 
-        if (is_array($array[$key])) {
-            $keys = array_merge($keys, array_keys_multi($array[$key]));
-        }
-    }
- 
-    return $keys;
-}
+    $resource = $modx->getObject('modResource', array('id' => $resourceId));
 
-$resourceIds = array_keys_multi($modx->getTree($modx->getChildIds(0,1,array('context' => 'web')),10,array('context' => 'web')));
-$resources = $modx->getCollection('modResource', array('id:IN' => $resourceIds));
-
-foreach($resources as &$resource)
-{
-    // Select the proper URL pattern of the current resource
-    $customUrl = $customUrls->getCustomUrl($resource);
-
-    if(!empty($customUrl))
+    if(is_object($resource))
     {
-        $customUrl->set('override', true);
-        $customUrls->generateCustomUrl($resource, $customUrl);
+        // Select the proper URL pattern of the current resource
+        $customUrl = $customUrls->getCustomUrl($resource);
+
+        //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Generate URL for '.$resource->get('id').' : '.$customUrl->get('pattern'));
+
+        if(!empty($customUrl))
+        {
+            $customUrl->set('override', true);
+            $customUrls->generateCustomUrl($resource, $customUrl);
+        }
     }
 }
 
