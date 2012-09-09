@@ -7,10 +7,12 @@ $corePath =  $modx->getOption('customurls.core_path',$scriptProperties,$modx->ge
 $customUrls = $modx->getService('customurls','CustomUrls',$corePath.'model/customurls/',$scriptProperties);
 if (!($customUrls instanceof CustomUrls)) return '';
 
+// Get resources id
 $resourceIds = $modx->getChildIds(0,10,array('context' => 'web'));
 
 foreach($resourceIds as $resourceId)
 {
+    // Select resource
     $resource = $modx->getObject('modResource', array('id' => $resourceId));
 
     if(is_object($resource))
@@ -18,8 +20,9 @@ foreach($resourceIds as $resourceId)
         // Select the proper URL pattern of the current resource
         $customUrl = $customUrls->getCustomUrl($resource);
 
-        //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Generate URL for '.$resource->get('id').' : '.$customUrl->get('pattern'));
+        //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Generate URL for '.$resource->get('pagetitle').' - '.$resource->get('id'));
 
+        // Generate resource URL
         if(!empty($customUrl))
         {
             $customUrl->set('override', true);
