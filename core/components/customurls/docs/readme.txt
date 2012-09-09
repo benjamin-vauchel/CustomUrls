@@ -1,8 +1,8 @@
 --------------------
 Snippets: CustomUrls
 --------------------
-Version: 1.0.0-rc1
-Released: August 23, 2012
+Version: 1.0.0-rc2
+Released: September 9, 2012
 Since: August 23, 2012
 Author: Benjamin Vauchel <contact@omycode.fr>
 

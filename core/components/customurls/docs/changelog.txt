@@ -1,5 +1,9 @@
 Changelog for CustomUrls
 
+CustomUrls 1.0.0-rc2
+-------------------
+Initial Version
+
 CustomUrls 1.0.0-rc1
 -------------------
 Initial Version
