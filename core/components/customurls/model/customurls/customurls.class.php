@@ -77,9 +77,11 @@ class CustomUrls {
 
     function generateCustomUrl(&$resource, $customUrl)
     {
-        // Set current context and resource for snippets processing (UltimateParent, getResourceField, ...)
-        $this->modx->switchContext($resource->get('context_key'));
-        $this->modx->resource = $resource;
+        // Set current resource and resourceMap for snippets processing (UltimateParent, getResourceField, ...)
+        $activeResource = $this->modx->resource;
+        $this->modx->resource = &$resource;
+        $this->modx->resourceMap = $this->modx->contexts[$resource->get('context_key')]->resourceMap;
+        $this->modx->resourceMap[$resource->get('parent')][] = $resource->get('id');
 
         // Create temporary chunk from custom url pattern
         $chunk = $this->modx->newObject('modChunk');
@@ -105,6 +107,7 @@ class CustomUrls {
         $resourceProperties = array_merge($resourceProperties, $tvs);
         
         //$this->modx->log(modX::LOG_LEVEL_ERROR, print_r($resourceProperties, true));
+        //$this->modx->log(modX::LOG_LEVEL_ERROR, print_r($this->modx->getParentIds($resource->get('id')), true));
         
         // Generate alias
         if(!$customUrl->get('uri'))
@@ -127,7 +130,6 @@ class CustomUrls {
                 $resource->set('uri', '');
                 $resource->set('uri_override', false);
                 $resource->save();
-                $this->modx->cacheManager->refresh(); // @TODO : use clearCache function instead
             }
         }
         // or generate URI
@@ -149,12 +151,15 @@ class CustomUrls {
                 );
             }
 
-            //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Parent URI ('.$resource->get('id').') : '.$parentUri);
+           //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Parent URI ('.$resource->get('id').') : '.$parentUri);
             
             $properties = array_merge($cuProperties, $resourceProperties);
+            //$this->modx->log(modX::LOG_LEVEL_ERROR, print_r($properties, true));
 
             $oldUri = isset($_REQUEST['uri']) ? $_REQUEST['uri'] : $resource->get('uri');
             $newUri = ltrim($chunk->process($properties), '/'); 
+
+            //$this->modx->log(modX::LOG_LEVEL_ERROR, 'newUri : '.$newUri);
             
             // We add the extension or container suffix
             $isHtml = true;
@@ -189,6 +194,8 @@ class CustomUrls {
                 $this->modx->cacheManager->refresh(); // @TODO : use clearCache function instead
             }
         }
+ 
+        $this->modx->resource = $activeResource;
 
         return isset($newAlias) ? $newAlias : $newUri;
     }
