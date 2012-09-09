@@ -2,7 +2,8 @@ Changelog for CustomUrls
 
 CustomUrls 1.0.0-rc2
 -------------------
-Initial Version
+Support getResourceField and UltimateParent snippets in URL patterns
+Preserve resource hierarchy in URL generation process
 
 CustomUrls 1.0.0-rc1
 -------------------
