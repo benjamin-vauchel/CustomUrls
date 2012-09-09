@@ -27,9 +27,18 @@
 /**
  * MODx CustomURLs CustomUrls plugin
  *
- * Description: Generate alias for resources (but preserves custom alias).
- * Example : "this-is-my-page-title-55" (where 55 is the resource's ID)
- * WARNING : This plugin is triggered after MODx generate his own resource's alias. So to avoid duplicate alias conflicts be sure to use this plugin from the start for all resources.
+ * Description: This extra allows you to define custom alias or URI patterns for your resources. It supports translit and Redirector packages.
+ * You can build your patterns from resource fields, TV, snippets and output filters and set some constraints like you'd do with custom forms.
+ * Usefull when you want to add id or published date to your URLs.
+ * 
+ * Example of URL patterns : 
+ * 
+ * [[+alias]]
+ * some-text-before-[[+alias]]
+ * [[+id]]-[[+alias]]
+ * [[+publishedon:strtotime:date=`%Y-%m-%d`]]/[[+id]]-[[+alias]]
+ * [[+tv.mytv]]-[[+id]]
+ * [[MySnippet? &id=`[[+id]]`]]
  *
  * Events: OnResourceDuplicate, OnDocFormSave
  *
