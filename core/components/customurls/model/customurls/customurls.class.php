@@ -63,7 +63,6 @@ class CustomUrls {
         $c->where(array(
             'active'    => 1,
             $resourceCriterias,
-            'modUserGroupMember.member' => 1,
             )
         );
         $c->sortby('criteria_key', 'desc');
