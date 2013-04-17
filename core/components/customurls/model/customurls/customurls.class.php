@@ -29,7 +29,7 @@ class CustomUrls {
 
         // We load Redirector service if it exists
         $redirector = $this->modx->getObject('modPlugin',array('name'=>'Redirector'));
-        if ($redirector) 
+        if ($redirector)
         {
             $corePath =  $this->modx->getOption('core_path').'components/redirector/';
             $redirector = $this->modx->getService('redirector','Redirector',$corePath.'model/redirector/');
@@ -40,11 +40,11 @@ class CustomUrls {
             $this->redirector = null;
         }
     }
-    
+
     function getCustomUrl($resource)
     {
         $resourceCriterias = array(
-            array( 
+            array(
                 'criteria_key' => '',
             )
         );
@@ -85,12 +85,12 @@ class CustomUrls {
         // Create temporary chunk from custom url pattern
         $chunk = $this->modx->newObject('modChunk');
         $chunk->setCacheable(false);
-        $chunk->setContent($customUrl->get('pattern')); 
-        
+        $chunk->setContent($customUrl->get('pattern'));
+
         // Get resource fields ...
         $resourceProperties = $resource->toArray();
         $resourceProperties['alias'] = $resource->cleanAlias($resource->get('pagetitle')); // We manually generate alias to avoid recurisivity
-        
+
         // ... and TVs
         $tvs = array();
         $pattern = '#\[\[\+tv\.(.*)(:.*)?\]\]#iU';
@@ -104,24 +104,24 @@ class CustomUrls {
             }
         }
         $resourceProperties = array_merge($resourceProperties, $tvs);
-        
+
         //$this->modx->log(modX::LOG_LEVEL_ERROR, print_r($resourceProperties, true));
         //$this->modx->log(modX::LOG_LEVEL_ERROR, print_r($this->modx->getParentIds($resource->get('id')), true));
-        
+
         // Generate alias
         if(!$customUrl->get('uri'))
         {
             $oldAlias = isset($_REQUEST['alias']) ? $_REQUEST['alias'] : $resource->get('alias');
             $newAlias = $chunk->process($resourceProperties);
-            
+
             //$this->modx->log(modX::LOG_LEVEL_ERROR, $oldAlias .' != '. $newAlias);
-            
+
             if(empty($oldAlias) || ($customUrl->get('override') && $oldAlias != $newAlias))
             {
                 // We create the redirection
                 if(!is_null($this->redirector) && $oldAlias != $newAlias)
                 {
-                    $this->modx->log(modX::LOG_LEVEL_ERROR, $oldAlias .' != '. $newAlias);
+                    //$this->modx->log(modX::LOG_LEVEL_ERROR, $oldAlias .' != '. $newAlias);
                     $this->createRedirect($resource);
                 }
                 // We save the updated resource
@@ -136,7 +136,7 @@ class CustomUrls {
         {
             $parentResource = $this->modx->getObject('modResource', $resource->get('parent'));
             $cuProperties = array();
-            if(!empty($parentResource)) 
+            if(!empty($parentResource))
             {
                 $parentUri = preg_replace('/\.[^.]+$/','',rtrim($parentResource->get('uri'), '/'));
                 $cuProperties = array(
@@ -151,21 +151,21 @@ class CustomUrls {
             }
 
            //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Parent URI ('.$resource->get('id').') : '.$parentUri);
-            
+
             $properties = array_merge($cuProperties, $resourceProperties);
             //$this->modx->log(modX::LOG_LEVEL_ERROR, print_r($properties, true));
 
             $oldUri = isset($_REQUEST['uri']) ? $_REQUEST['uri'] : $resource->get('uri');
-            $newUri = ltrim($chunk->process($properties), '/'); 
+            $newUri = ltrim($chunk->process($properties), '/');
 
             //$this->modx->log(modX::LOG_LEVEL_ERROR, 'newUri : '.$newUri);
-            
+
             // We add the extension or container suffix
             $isHtml = true;
             $extension = '';
             $workingContext = $this->modx->getContext($resource->get('context_key'));
             $containerSuffix = $workingContext->getOption('container_suffix', '');
-            
+
             if ($contentType = $this->modx->getObject('modContentType', $resource->get('content_type'))) {
                 $extension = $contentType->getExtension();
                 $isHtml = (strpos($contentType->get('mime_type'), 'html') !== false);
@@ -176,8 +176,8 @@ class CustomUrls {
 
             $newUri .= $extension;
             //$this->modx->log(modX::LOG_LEVEL_ERROR, 'Extension ('.$resource->get('id').') : '.$extension);
-            
-            
+
+
             if(empty($oldUri) || ($customUrl->get('override') && $oldUri != $newUri))
             {
                 // We create the redirection
@@ -193,7 +193,7 @@ class CustomUrls {
                 $this->modx->cacheManager->refresh(); // @TODO : use clearCache function instead
             }
         }
- 
+
         $this->modx->resource = $activeResource;
 
         return isset($newAlias) ? $newAlias : $newUri;
@@ -201,13 +201,13 @@ class CustomUrls {
 
     function createRedirect($resource)
     {
-        
+
         // We specifie context to make relative links with makeUrl
         $this->modx->switchContext($resource->get('context_key'));
-        
+
         // We create the redirection for the resource ...
         $values = '("'.$this->modx->makeUrl($resource->get('id')).'","[[~'.$resource->get('id').']]", '.($resource->get('deleted') ? 0 : 1).')';
-        
+
         //  ... and for its children
         $childrenIds = $this->modx->getChildIds($resource->get('id'), 10);
         foreach($childrenIds as $childId)
