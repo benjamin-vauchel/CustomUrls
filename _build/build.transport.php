@@ -32,7 +32,7 @@
 define('PKG_NAME','CustomUrls');
 define('PKG_NAME_LOWER','customurls');
 define('PKG_VERSION','1.0.0');
-define('PKG_RELEASE','rc2');
+define('PKG_RELEASE','rc3');
 define('PKG_CATEGORY','CustomUrls');
 
 /* Set package options - you can turn these on one-by-one

@@ -1,5 +1,9 @@
 Changelog for CustomUrls
 
+CustomUrls 1.0.0-rc3
+-------------------
+Remove small bug that made package worked only for admin user
+
 CustomUrls 1.0.0-rc2
 -------------------
 Support getResourceField and UltimateParent snippets in URL patterns
