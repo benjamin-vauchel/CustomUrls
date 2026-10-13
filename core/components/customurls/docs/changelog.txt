@@ -1,5 +1,13 @@
 Changelog for CustomUrls
 
+Unreleased
+-------------------
+MODX 3 compatibility (manager page):
+- Menu entry without modAction (namespace + controller), no legacy icon path
+- Home controller includes index.class.php itself
+- Grid actions in lowercase (getlist, updatefromgrid) to match the processor files
+- Class-based processors for updatefromgrid and generate (MODX 3 runs class-based processors only)
+
 CustomUrls 1.0.0-rc3
 -------------------
 Remove small bug that made package worked only for admin user
