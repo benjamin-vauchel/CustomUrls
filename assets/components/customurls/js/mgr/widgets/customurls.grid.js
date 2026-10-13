@@ -10,8 +10,8 @@ CustomUrls.grid.CustomUrls = function(config) {
     Ext.applyIf(config,{
         id: 'customurls-grid-customurls'
         ,url: CustomUrls.config.connectorUrl
-        ,baseParams: { action: 'mgr/customurls/getList' }
-        ,save_action: 'mgr/customurls/updateFromGrid'
+        ,baseParams: { action: 'mgr/customurls/getlist' }
+        ,save_action: 'mgr/customurls/updatefromgrid'
         ,fields: ['id','pattern','uri','criteria_key','criteria_value','usergroup','override','active']
         ,paging: true
         ,autosave: true
